@@ -2,27 +2,23 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import BankCard from './BankCard'
-import { countTransactionCategories } from '@/lib/utils'
-
 
 const RightSidebar = ({ user, transactions, banks }: RightSidebarProps) => {
-  const categories: CategoryCount[] = countTransactionCategories(transactions);
-
   return (
     <aside className="right-sidebar">
       <section className="flex flex-col pb-8">
         <div className="profile-banner" />
         <div className="profile">
           <div className="profile-img">
-            <span className="text-5xl font-bold text-blue-500">{user.firstName[0]}</span>
+            <span className="text-5xl font-bold text-blue-500">{user.name?.[0] ?? "U"}</span>
           </div>
 
           <div className="profile-details">
             <h1 className='profile-name'>
-              {user.firstName} {user.lastName}
+              {user.name ?? "User"}
             </h1>
             <p className="profile-email">
-              {user.email}
+              {user.email ?? ""}
             </p>
           </div>
         </div>
@@ -45,21 +41,21 @@ const RightSidebar = ({ user, transactions, banks }: RightSidebarProps) => {
         </div>
 
         {banks?.length > 0 && (
-          <div className="relative mt-2 min-h-[240px] w-full max-w-[320px]">
-            <div className='relative z-10 w-full'>
+          <div className="relative mt-2 min-h-[240px] w-full max-w-[300px]">
+            <div className='relative z-10'>
               <BankCard 
                 key={banks[0].$id}
                 account={banks[0]}
-                userName={`${user.firstName} ${user.lastName}`}
+                userName={user.name}
                 showBalance={false}
               />
             </div>
             {banks[1] && (
-              <div className="absolute left-8 top-12 z-0 w-[92%]">
+              <div className="absolute right-0 top-8 z-0 w-[92%]">
                 <BankCard 
                   key={banks[1].$id}
                   account={banks[1]}
-                  userName={`${user.firstName} ${user.lastName}`}
+                  userName={user.name}
                   showBalance={false}
                 />
               </div>

@@ -391,7 +391,7 @@
   }
 
   .sidebar {
-    @apply sticky left-0 top-0 hidden h-screen w-fit flex-col justify-between border-r border-gray-200 bg-white pt-8 text-white sm:p-4 max-md:hidden xl:p-6 2xl:w-[355px];
+    @apply sticky left-0 top-0 hidden h-screen w-fit flex-col justify-between border-r border-gray-200 bg-white pt-8 text-white sm:flex sm:p-4 max-md:hidden xl:p-6 2xl:w-[355px];
   }
 
   .sidebar-logo {
