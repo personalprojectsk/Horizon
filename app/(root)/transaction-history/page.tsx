@@ -1,17 +1,13 @@
 import HeaderBox from '@/components/HeaderBox'
+import { Pagination } from '@/components/Pagination';
 import TransactionsTable from '@/components/TransactionsTable';
-import { BankTabItem } from '@/components/BankTabItem';
 import { getAccount, getAccounts } from '@/lib/actions/bank.actions';
 import { getLoggedInUser } from '@/lib/actions/user.actions';
 import { formatAmount } from '@/lib/utils';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import React from 'react'
 
-const TransactionHistory = async ({ searchParams }:SearchParamProps) => {
-  const params = await searchParams;
-  const id = params?.id;
-  const page = params?.page;
-
+const TransactionHistory = async ({ searchParams }: SearchParamProps) => {
+  const { id, page } = await searchParams;
   const currentPage = Number(page as string) || 1;
   const loggedIn = await getLoggedInUser();
   const accounts = await getAccounts({ 
@@ -26,15 +22,14 @@ const TransactionHistory = async ({ searchParams }:SearchParamProps) => {
   const account = await getAccount({ appwriteItemId })
 
   const rowsPerPage = 10;
-  const totalPages = Math.ceil((account?.transactions?.length ?? 0) / rowsPerPage);
+  const totalPages = Math.ceil(account?.transactions.length / rowsPerPage);
 
   const indexOfLastTransaction = currentPage * rowsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
 
-  const currentTransactions = account?.transactions?.slice(
+  const currentTransactions = account?.transactions.slice(
     indexOfFirstTransaction, indexOfLastTransaction
-  ) ?? []
-
+  )
   return (
     <div className="transactions">
       <div className="transactions-header">
@@ -62,29 +57,16 @@ const TransactionHistory = async ({ searchParams }:SearchParamProps) => {
           </div>
         </div>
 
-        <Tabs defaultValue={appwriteItemId} className="w-full">
-          <TabsList className="recent-transactions-tablist">
-            {accountsData.map((acc: Account) => (
-              <TabsTrigger key={acc.id} value={acc.appwriteItemId}>
-                <BankTabItem account={acc} appwriteItemId={appwriteItemId} />
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {accountsData.map((acc: Account) => (
-            <TabsContent key={acc.id} value={acc.appwriteItemId} className="space-y-4">
-              <section className="flex w-full flex-col gap-6">
-                {currentTransactions.length > 0 ? (
-                  <TransactionsTable transactions={currentTransactions} />
-                ) : (
-                  <p className="text-center text-sm text-gray-500 py-10">
-                    No transactions found for this account.
-                  </p>
-                )}
-              </section>
-            </TabsContent>
-          ))}
-        </Tabs>
+        <section className="flex w-full flex-col gap-6">
+          <TransactionsTable 
+            transactions={currentTransactions}
+          />
+            {totalPages > 1 && (
+              <div className="my-4 w-full">
+                <Pagination totalPages={totalPages} page={currentPage} />
+              </div>
+            )}
+        </section>
       </div>
     </div>
   )
